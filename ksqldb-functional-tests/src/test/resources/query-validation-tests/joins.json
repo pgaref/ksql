@@ -1132,6 +1132,30 @@
       ]
     },
     {
+      "name": "stream stream right join with out of order and custom grace period",
+      "format": ["AVRO", "JSON"],
+      "statements": [
+        "CREATE STREAM LEFT_STREAM (id BIGINT KEY, l1 VARCHAR) WITH (kafka_topic='left_topic', value_format='{FORMAT}');",
+        "CREATE STREAM RIGHT_STREAM (id BIGINT KEY, l2 VARCHAR) WITH (kafka_topic='right_topic', value_format='{FORMAT}');",
+        "CREATE STREAM RIGHT_JOIN as SELECT t.id, l1, l2 FROM LEFT_STREAM t RIGHT JOIN RIGHT_STREAM tt WITHIN 1 minute GRACE PERIOD 1 minute on t.id = tt.id;"
+      ],
+      "inputs": [
+        {"topic": "left_topic", "key": 0, "value": {"L1": "A"}, "timestamp": 0},
+        {"topic": "right_topic", "key": 0, "value": {"L2": "a"}, "timestamp": 60000},
+        {"topic": "left_topic", "key": 1, "value": {"L1": "B"}, "timestamp": 330000},
+        {"topic": "left_topic", "key": 2, "value": {"L1": "C"}, "timestamp": 90000},
+        {"topic": "right_topic", "key": 2, "value": {"L2": "c"}, "timestamp": 90000},
+        {"topic": "right_topic", "key": 3, "value": {"L2": "d"}, "timestamp": 60000},
+        {"topic": "left_topic", "key": 3, "value": {"L1": "D"}, "timestamp": 90000}
+      ],
+      "outputs": [
+        {"topic": "RIGHT_JOIN", "key": 0, "value": {"L1": "A", "L2": "a"}, "timestamp": 60000},
+        {"topic": "RIGHT_JOIN", "key": 2, "value": {"L1": "C", "L2": "c"}, "timestamp": 90000},
+        {"topic": "RIGHT_JOIN", "key": 3, "value": {"L1": null, "L2": "d"}, "timestamp": 60000},
+        {"topic": "RIGHT_JOIN", "key": 3, "value": {"L1": "D", "L2": "d"}, "timestamp": 90000}
+      ]
+    },
+    {
       "name": "stream stream full outer join with out of order and custom grace period",
       "format": ["AVRO", "JSON"],
       "statements": [
