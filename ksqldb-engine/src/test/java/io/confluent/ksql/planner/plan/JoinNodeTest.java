@@ -27,7 +27,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +37,6 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.confluent.ksql.execution.context.QueryContext;
 import io.confluent.ksql.execution.ddl.commands.KsqlTopic;
 import io.confluent.ksql.execution.expression.tree.Expression;
@@ -92,7 +90,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 
-@SuppressWarnings({"SameParameterValue", "OptionalGetWithoutIsPresent", "unchecked", "rawtypes"})
+@SuppressWarnings({"SameParameterValue", "OptionalGetWithoutIsPresent", "unchecked", "rawtypes",
+    "checkstyle:ClassDataAbstractionCoupling"})
 @RunWith(MockitoJUnitRunner.class)
 public class JoinNodeTest {
 
@@ -342,12 +341,12 @@ public class JoinNodeTest {
     joinNode.buildStream(planBuildContext);
 
     // Then:
-    verify(rightSchemaKStream).leftJoin(
-        leftSchemaKStream,
+    verify(leftSchemaKStream).rightJoin(
+        rightSchemaKStream,
         SYNTH_KEY,
         WITHIN_EXPRESSION.get(),
-        OTHER_FORMAT.getFormatInfo(),
         VALUE_FORMAT.getFormatInfo(),
+        OTHER_FORMAT.getFormatInfo(),
         CONTEXT_STACKER
     );
   }
@@ -366,12 +365,12 @@ public class JoinNodeTest {
     joinNode.buildStream(planBuildContext);
 
     // Then:
-    verify(rightSchemaKStream).leftJoin(
-        leftSchemaKStream,
+    verify(leftSchemaKStream).rightJoin(
+        rightSchemaKStream,
         SYNTH_KEY,
         WITHIN_EXPRESSION_WITH_GRACE.get(),
-        OTHER_FORMAT.getFormatInfo(),
         VALUE_FORMAT.getFormatInfo(),
+        OTHER_FORMAT.getFormatInfo(),
         CONTEXT_STACKER
     );
   }
