@@ -109,6 +109,10 @@ public final class StreamStreamJoinBuilder {
         result = left.getStream().leftJoin(
             right.getStream(), joinParams.getJoiner(), joinWindows, joined);
         break;
+      case RIGHT:
+        result = right.getStream().leftJoin(
+            left.getStream(), joinParams.getJoiner(), joinWindows, joined);
+        break;
       case OUTER:
         result = left.getStream().outerJoin(
             right.getStream(), joinParams.getJoiner(), joinWindows, joined);

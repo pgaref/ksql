@@ -436,12 +436,12 @@ public class JoinNode extends PlanNode implements JoiningNode {
               contextStacker
           );
         case RIGHT:
-          return rightStream.leftJoin(
-              leftStream,
+          return leftStream.rightJoin(
+              rightStream,
               joinNode.getKeyColumnName(),
               joinNode.withinExpression.get(),
-              JoiningNode.getValueFormatForSource(joinNode.right).getFormatInfo(),
               JoiningNode.getValueFormatForSource(joinNode.left).getFormatInfo(),
+              JoiningNode.getValueFormatForSource(joinNode.right).getFormatInfo(),
               contextStacker
           );
         case OUTER:
